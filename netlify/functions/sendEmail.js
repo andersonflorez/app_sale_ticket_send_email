@@ -25,8 +25,6 @@ exports.handler = async function (event, context) {
         }
 
         const buffer = Buffer.from(pdfBase64, 'base64');
-        console.log(process.env.SMTP_USERNAME);
-        console.log(process.env.SMTP_PASSWORD)
 
         const nodemailer = require('nodemailer');
         const transporter = nodemailer.createTransport({
@@ -38,7 +36,7 @@ exports.handler = async function (event, context) {
         });
 
         const mailOptions = {
-            from: process.env.SMTP_USERNAME,
+            from: 'eventos@iglesiamt.com',
             to: email,
             subject: 'PDF adjunto',
             html: html || '<p>Archivo adjunto</p>',
