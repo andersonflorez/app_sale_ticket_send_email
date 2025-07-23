@@ -21,7 +21,7 @@ exports.handler = async function (event, context) {
             }
 
             const emailTo = fields.email?.[0];
-            const htmlBody = fields.html?.[0] || '<p>Correo sin cuerpo</p>';
+            const htmlBody = '<p>Correo sin cuerpo</p>';
             const file = files.pdf?.[0];
 
             if (!emailTo || !file) {
