@@ -1,18 +1,32 @@
-const nodemailer = require('nodemailer');
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*', // o limita a tu dominio
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+};
 
 exports.handler = async function (event, context) {
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 200,
+            headers: corsHeaders,
+            body: 'OK',
+        };
+    }
+
     try {
-        const { email, filename, pdfBase64 } = JSON.parse(event.body);
+        const { email, html, filename, pdfBase64 } = JSON.parse(event.body);
 
         if (!email || !pdfBase64 || !filename) {
             return {
                 statusCode: 400,
+                headers: corsHeaders,
                 body: JSON.stringify({ error: 'Faltan campos obligatorios' }),
             };
         }
 
         const buffer = Buffer.from(pdfBase64, 'base64');
 
+        const nodemailer = require('nodemailer');
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
@@ -25,7 +39,7 @@ exports.handler = async function (event, context) {
             from: process.env.SMTP_USERNAME,
             to: email,
             subject: 'PDF adjunto',
-            html: '<p>Archivo adjunto</p>',
+            html: html || '<p>Archivo adjunto</p>',
             attachments: [
                 {
                     filename: filename,
@@ -39,11 +53,13 @@ exports.handler = async function (event, context) {
 
         return {
             statusCode: 200,
+            headers: corsHeaders,
             body: JSON.stringify({ message: 'Correo enviado correctamente' }),
         };
     } catch (error) {
         return {
             statusCode: 500,
+            headers: corsHeaders,
             body: JSON.stringify({ error: error.message }),
         };
     }
