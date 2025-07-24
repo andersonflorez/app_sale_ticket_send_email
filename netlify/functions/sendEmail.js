@@ -1,3 +1,7 @@
+const fs = require('fs');
+const path = require('path');
+const nodemailer = require('nodemailer');
+
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*', // o limita a tu dominio
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -29,7 +33,6 @@ exports.handler = async function (event, context) {
         const htmlPath = path.join(__dirname, 'email_template.html'); // Ajusta el nombre del archivo
         let htmlContent = fs.readFileSync(htmlPath, 'utf8');
 
-        const nodemailer = require('nodemailer');
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
